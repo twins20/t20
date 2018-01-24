@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twins.t20.Dao.JobBoardFdownloadDaoFatherMapper">
+
+	
+	<select id="getJobBoardFdownloadMaxIdx"  resultType="Integer">
+		select max(jbfidx) from job_board_fdownload
+	</select>	
+	
+	<update id="spUpdateJobBoardFdownload" parameterType="HashMap">
+		update job_board_fdownload set jbfsort=jbfsort+1 where jbidx=#{jbidx} and jbfsort>=#{jbfsort}
+	</update>
+	
+	<insert id="spInsertJobBoardFdownload" parameterType="JobBoardFdownloadVo">
+		insert into job_board_fdownload values (#{jbfidx}, #{jbfname}, #{jbflink}, #{jbfsort},#{jbidx})
+	</insert>
+	
+	<select id="suGetJobBoardFdownload" parameterType="HashMap">
+		select * from job_board_fdownload where jbidx=#{jbidx} and jbfsort=#{jbfsort}-1 
+	</select>
+	
+	<delete id="suDeleteJobBoardFdownload">
+		delete job_board_fdownload where jbidx=#{jbidx} and jbfsort=#{jbfsort-1}
+	</delete>
+	
+	<update id="suUpdateJobBoardFdownload" parameterType="HashMap">
+		update job_board_fdownload set jbfsort=jbfsort-1 where jbidx=#{jbidx} and jbfsort=#{jbfsort}
+	</update>
+	
+	<insert id="suInsertJobBoardFdownload" parameterType="JobBoardFdownloadVo">
+		insert into job_board_fdownload valuse(#{jbfidx}, #{jbfname}, #{jbflink}, #{jbfsort}+1,#{jbidx})
+	</insert>
+	
+	<select id="sdGetJobBoardFdownload" parameterType="HashMap">
+		select * from job_board_fdownload where jbidx=#{jbidx} and jbfsort=#{jbfsort}+1
+	</select>
+	
+	<delete id="sdDeleteJobBoardFdownload">
+		delete job_board_fdownload where jbidx=#{jbidx} and jbfsort=#{jbfsort}+1
+	</delete>
+	
+	<update id="sdUpdateJobBoardFdownload" parameterType="HashMap">	
+		update job_board_fdownload set jbfsort=jbfsort+1 where jbidx=#{jbidx} and jbfsort=#{jbfsort}
+	</update>
+	
+	<insert id="sdInsertJobBoardFdownload" parameterType="JobBoardFdownloadVo">
+		insert into job_board_fdownload valuse(#{jbfidx}, #{jbfname}, #{jbflink}, #{jbfsort}-1,#{jbidx})
+	</insert>
+	
+	<delete id="smDeleteJobBoardFdownload">
+		delete job_board_fdownload where jbidx=#{jbidx} and jbfsort=#{jbfsort}+1
+	</delete>
+	
+	<update id="smUpdateJobBoardFdownload">
+		update job_board_fdownload set jbfsort=jbfsort+1 where jbidx=#{jbidx} and jbfsort=#{jbfsort}
+	</update>
+	
+	<select id="getListJobBoardFdownload" parameterType="Integer" resultType="JobBoardFdownloadVo">
+		select * from job_board_fdownload where jbidx=#{jbidx} order by jbfsort desc, jbfidx desc
+	</select>
+
+</mapper>

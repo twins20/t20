@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twins.t20.Dao.JobBoardDaoFatherMapper">
+
+<sql id="search">                          
+                          <if test="searchType != null">
+                          	<if test="searchType.equals('jbsubject')">
+                          		and jbsubject like '%'||#{keyword}||'%'
+                          	</if>
+                          	<if test="searchType.equals('jbwriter')">
+                          		and jbwriter like '%'||#{keyword}||'%'
+                          	</if>
+                          	<if test="searchType.equals('jbcontent')">
+                          		and jbcontent like '%'||#{keyword}||'%'
+                          	</if>
+                          </if>
+</sql>
+
+<select id="getJobBoardList" parameterType="SearchCriteria" resultType="JobBoardVo">
+<![CDATA[select 
+	M.rnum,M.jbidx,M.jboidx,M.jbupdown,M.jbleftright,M.jbsubject,M.jbcontent,
+	M.jbwriter,M.jbwritedate,M.jbmodifydate,M.jbcategory,M.jbreadnum,
+	M.jbdeleted,M.jmidx from 
+	(select rownum as rnum,S.jbidx,S.jboidx,S.jbupdown,S.jbleftright,S.jbsubject,
+        	S.jbcontent,S.jbwriter,S.jbwritedate,S.jbmodifydate,S.jbcategory,
+		S.jbreadnum,S.jbdeleted,S.jmidx from 
+		(select jbidx,jboidx,jbupdown,jbleftright,jbsubject,jbcontent,
+		jbwriter,jbwritedate,jbmodifydate,jbcategory,jbreadnum,jbdeleted,
+		jmidx from job_board 
+                	where (jbidx > 0 
+]]>
+
+<include refid="search"></include>
+                                                                    
+<![CDATA[                         
+                ) and  jbdeleted='n'      
+		order by jboidx desc, jbupdown asc, jbleftright asc) S
+      		where rownum <=#{pageEnd}) M
+	 where M.rnum >= #{pageStart}
+]]>
+</select>
+
+
+<select id="getJobBoardList_rm" parameterType="SearchCriteria" resultType="JobBoardVo">
+<![CDATA[select M.rnum,M.jbidx,M.jboidx,M.jbupdown,M.jbleftright,M.jbsubject,M.jbcontent,
+      	M.jbwriter,M.jbwritedate,M.jbmodifydate,M.jbcategory,M.jbreadnum,M.jbdeleted,M.jmidx 
+		from (select rownum as rnum,S.jbidx,S.jboidx,S.jbupdown,S.jbleftright,S.jbsubject,
+             S.jbcontent,S.jbwriter,S.jbwritedate,S.jbmodifydate,S.jbcategory,S.jbreadnum,S.jbdeleted,S.jmidx
+      		     from (select * from job_board 
+      		     	   where ( jbdeleted = 'n' 
+      		     	   and jbidx > 0 
+]]>
+
+<include refid="search"></include>
+                   
+<![CDATA[                
+         
+                          ) or (jbidx = #{jbidx}) order by jboidx desc, jbupdown asc, jbleftright asc) S
+      		     where rownum <=#{pageEnd}) M
+	    where M.rnum >= #{pageStart}
+]]>
+</select>
+
+<select id="getJobBoardList_nfcrd" parameterType="SearchCriteria" resultType="JobBoardVo">
+<![CDATA[select M.rnum,M.jbidx,M.jboidx,M.jbupdown,M.jbleftright,M.jbsubject,M.jbcontent,
+      	M.jbwriter,M.jbwritedate,M.jbmodifydate,M.jbcategory,M.jbreadnum,M.jbdeleted,M.jmidx 
+		from (select rownum as rnum,S.jbidx,S.jboidx,S.jbupdown,S.jbleftright,S.jbsubject,
+             S.jbcontent,S.jbwriter,S.jbwritedate,S.jbmodifydate,S.jbcategory,S.jbreadnum,S.jbdeleted,S.jmidx
+      		     from (select * from job_board 
+      		     	   where jbcategory = #{jbcategory} and jbdeleted = 'n' 
+      		     	   and jbidx > 0 
+]]>
+
+<include refid="search"></include>
+                                                                    
+<![CDATA[                         
+                          
+      		           order by jboidx desc, jbupdown asc, jbleftright asc) S
+      		     where rownum <=#{pageEnd}) M
+	    where M.rnum >= #{pageStart}
+]]>
+</select>
+
+
+<select id="getJobBoardList_nfcrd_rm" parameterType="SearchCriteria" resultType="JobBoardVo">
+<![CDATA[select M.rnum,M.jbidx,M.jboidx,M.jbupdown,M.jbleftright,M.jbsubject,M.jbcontent,
+      	M.jbwriter,M.jbwritedate,M.jbmodifydate,M.jbcategory,M.jbreadnum,M.jbdeleted,M.jmidx 
+		from (select rownum as rnum,S.jbidx,S.jboidx,S.jbupdown,S.jbleftright,S.jbsubject,
+             S.jbcontent,S.jbwriter,S.jbwritedate,S.jbmodifydate,S.jbcategory,S.jbreadnum,S.jbdeleted,S.jmidx
+      		     from (select * from job_board 
+      		     	   where ( jbcategory = #{jbcategory} and jbdeleted = 'n' 
+      		     	   and jbidx > 0 
+]]>
+
+<include refid="search"></include>
+                   
+<![CDATA[                
+         
+                          ) or (jbidx = #{jbidx}) order by jboidx desc, jbupdown asc, jbleftright asc) S
+      		     where rownum <=#{pageEnd}) M
+	    where M.rnum >= #{pageStart}
+]]>
+</select>
+
+<select id="getJobBoardReplyCount"  resultType="Integer" parameterType="Integer">
+	<![CDATA[
+	select count(*) from job_board b, job_board_comnent bc
+	where b.jbidx=bc.jbidx and b.jbidx=#{jbidx} and jbcategory='r' and
+	       b.jbdeleted='n'
+	]]>
+</select>
+
+<select id="getJobBoardTotalRecordCount" parameterType="SearchCriteria" resultType="Integer">
+<![CDATA[select count(jbidx) from job_board 
+             where jbidx > 0 
+]]>
+	<include refid="search"></include> 
+			 
+			 and jbdeleted='n'           
+</select>
+
+
+<select id="getJobBoardTotalRecordCount_rm" parameterType="SearchCriteria" resultType="Integer">
+	<![CDATA[select count(jbidx) from job_board 
+             where ( jbidx > 0 
+]]>
+	<include refid="search"></include>   
+	  
+		     and jbdeleted='n' )  or ( jbidx = #{jbidx} )
+</select>
+
+
+<select id="getJobBoard_nfcrd_TotalRecordCount" parameterType="SearchCriteria" resultType="Integer">
+<![CDATA[select count(jbidx) from job_board 
+             where jbidx > 0 
+]]>
+	<include refid="search"></include> 
+			 
+			 and jbcategory=#{jbcategory} and jbdeleted='n'           
+</select>
+
+
+<select id="getJobBoard_nfcrd_TotalRecordCount_rm" parameterType="SearchCriteria" resultType="Integer">
+	<![CDATA[select count(jbidx) from job_board 
+             where ( jbidx > 0 
+]]>
+	<include refid="search"></include>   
+	  
+		     and jbcategory=#{jbcategory} and jbdeleted='n' )  or ( jbidx = #{jbidx} )
+</select>
+
+<select id="getJobBoardMaxIdx"  resultType="Integer">
+	select max(jbidx) from job_board
+</select>
+
+
+<insert id="insertJobBoard" parameterType="JobBoardVo">
+	insert into job_board values (#{jbidx}, #{jbidx}, 0, 0, #{jbsubject}, 
+		#{jbcontent}, #{jbwriter}, #{jbwritedate}, #{jbmodifydate}, #{jbcategory}, 
+		1, 'n', #{jmidx})
+</insert>
+
+<update id="updateJobBoard" parameterType="HashMap">
+	update job_board set jbsubject=#{jbsubject}, jbcontent=#{jbcontent},
+		jbwriter=#{jbwriter}, jbmodifydate=#{jbmodifydate}
+		where jbidx = #{jbidx}
+</update>
+
+<select id="getJobBoardContent" parameterType="Integer" resultType="JobBoardVo">
+	select * from job_board	where jbidx=#{jbidx}
+</select>
+
+
+<select id="getJobBoardContentJmidxForDelete" parameterType="Integer" resultType="Integer">
+	select jmidx from job_board	where jbidx=#{jbidx}
+</select>
+
+
+<update id="updateJobBoardReadrnum" parameterType="Integer">
+	update job_board set jbreadnum=jbreadnum+1 where jbidx=#{jbidx}
+</update>
+
+<delete id="deleteJobBaoard" parameterType="Integer">
+	update job_board set jbdeleted='y' where jbidx=#{jbidx}
+</delete>
+
+<update id="replyUpdateJobBoard" parameterType="HashMap">
+	update job_board set jbupdown=jbupdown+1 where jboidx=#{jboidx} 	
+			and jbupdown>=#{jbupdown}
+</update>
+
+<insert id="replyInsertJobBoard" parameterType="JobBoardVo">
+	insert into job_board values 		
+ 	(#{jbidx},#{jboidx},#{jbupdown},#{jbleftright},#{jbsubject},#{jbcontent},
+	#{jbwriter},#{jbwritedate},#{jbmodifydate},#{jbcategory},1,'n',#{jmidx})
+</insert>
+
+<!-- 
+<select id="getMyJobBoardList" parameterType="Integer" resultType="JobBoardVo">
+	select * from job_member m, job_board b
+	where m.jmidx = b.jmidx and b.jmidx=#{jmidx} and b.jbdeleted='n'
+</select>
+ -->
+
+<select id="getMyJobBoardList" parameterType="HashMap" resultType="JobBoardVo">
+<![CDATA[select 
+	M.rnum,M.jbidx,M.jboidx,M.jbupdown,M.jbleftright,M.jbsubject,M.jbcontent,
+	M.jbwriter,M.jbwritedate,M.jbmodifydate,M.jbcategory,M.jbreadnum,
+	M.jbdeleted,M.jmidx from 
+	(select rownum as rnum,S.jbidx,S.jboidx,S.jbupdown,S.jbleftright,S.jbsubject,
+        	S.jbcontent,S.jbwriter,S.jbwritedate,S.jbmodifydate,S.jbcategory,
+		S.jbreadnum,S.jbdeleted,S.jmidx from 
+		(select jbidx,jboidx,jbupdown,jbleftright,jbsubject,jbcontent,
+		jbwriter,jbwritedate,jbmodifydate,jbcategory,jbreadnum,jbdeleted,
+		b.jmidx from job_member m, job_board b 
+			where m.jmidx = b.jmidx and b.jmidx=#{jmidx} and jbdeleted='n' and  
+            (jbidx > 0 
+]]>
+
+			<if test="searchType != null">
+	           	<if test="searchType.equals('jbsubject')">
+	           		and jbsubject like '%'||#{keyword}||'%'
+	           	</if>
+	           	<if test="searchType.equals('jbwriter')">
+	           		and jbwriter like '%'||#{keyword}||'%'
+	           	</if>
+	           	<if test="searchType.equals('jbcontent')">
+	           		and jbcontent like '%'||#{keyword}||'%'
+	           	</if>
+	        </if>
+                                                                    
+<![CDATA[                         
+            )    
+		    order by jboidx desc, jbupdown asc, jbleftright asc) S
+      			where rownum <= #{pageEnd}) M
+	 where M.rnum >= #{pageStart}
+]]>
+</select>
+
+
+<select id="getMyJobBoardListCount" parameterType="Integer" resultType="Integer">
+	select count(*) from job_member m, job_board b
+	where m.jmidx = b.jmidx and b.jmidx=#{jmidx} and jbdeleted='n'
+</select>
+
+
+<!-- 
+<select id="getMyJobBoardCommentContent" parameterType="Integer" resultType="JobBoardCommentVo">
+	select * from job_board b, job_board_comment bc
+	where b.jbidx=bc.jbidx and bc.jmidx=#{jmidx} and b.jbdeleted='n'
+</select>
+ -->
+<!--  
+<select id="getMyJobBoardCommentContent" parameterType="Integer" resultType="JobBoardCommentVo">
+	<![CDATA[select * from job_board b, job_board_comment bc
+	where b.jbidx=bc.jbidx and bc.jmidx=#{jmidx}  and b.jbdeleted='n'
+ 	]]>
+	<if test="searchType != null">
+		<if test="searchType.equals('jbsubject')">
+			and jbsubject like '%'||#{keyword}||'%'
+		</if>
+		<if test="searchType.equals('jbccontent')">
+			and jbccontent like '%'||#{keyword}||'%'
+		</if>
+	</if>
+</select>
+-->
+
+<select id="getMyJobBoardCommentContent" parameterType="Integer" resultType="JobBoardCommentVo">
+	<![CDATA[select 
+	M.rnum,M.jbcidx,M.jbcupdown,M.jbcleftright,M.jbccontent,M.jbcwriter,
+	M.jbcwritedate,M.jbidx,M.jmidx,M.jbsubject from 
+	(select rownum as rnum, X.jbcidx,X.jbcupdown,X.jbcleftright,X.jbccontent,
+	X.jbcwriter,X.jbcwritedate,X.jbidx,X.jmidx,X.jbsubject from
+	(select jbcidx,jbcupdown,jbcleftright,jbccontent,jbcwriter,jbcwritedate,b.jbidx,bc.jmidx,b.jbsubject
+	 from job_board b, job_board_comment bc
+	where b.jbidx=bc.jbidx and bc.jmidx=#{jmidx}  and b.jbdeleted='n' and(b.jbidx>0
+ 	]]>
+			<if test="searchType != null">
+	           	<if test="searchType.equals('jbsubject')">
+	           		and jbsubject like '%'||#{keyword}||'%'
+	           	</if>
+	           	<if test="searchType.equals('jbccontent')">
+	           		and jbccontent like '%'||#{keyword}||'%'
+	           	</if>
+	           	
+	          </if>
+	<![CDATA[
+	)
+		order by b.jbidx desc) X
+	      		where rownum <=#{pageEnd}) M
+		 where M.rnum >= #{pageStart}
+	
+	]]>
+</select>
+
+<select id="getJobBoardMyCommentCount" parameterType="Integer" resultType="Integer">
+	select count(jbcidx) from job_board_comment where jmidx=#{jmidx}
+</select>
+
+</mapper>

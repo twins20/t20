@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+<typeAliases>
+
+  <typeAlias alias="JobBoardVo" type="com.twins.t20.Domain.JobBoardVo"/>
+  <typeAlias alias="JobMemberVo" type="com.twins.t20.Domain.JobMemberVo"/>
+  <typeAlias alias="JobBoardCommentVo" type="com.twins.t20.Domain.JobBoardCommentVo"/>
+  <typeAlias alias="JobBoardFdownloadVo" type="com.twins.t20.Domain.JobBoardFdownloadVo"/>
+  <typeAlias alias="Criteria" type="com.twins.t20.Domain.Criteria"/>
+  <typeAlias alias="SearchCriteria" type="com.twins.t20.Domain.SearchCriteria"/>
+  <typeAlias alias="PageMaker" type="com.twins.t20.Domain.PageMaker"/>
+  
+</typeAliases>
+</configuration>

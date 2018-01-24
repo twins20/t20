@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twins.t20.Dao.JobBoardCommentDaoFatherMapper">
+
+	<update id="replyUpdateUpdownJobBoardComment" parameterType="HashMap">
+		update job_board_comment set jbcupdown=jbcupdown+1 where jbidx=#{jbidx} and jbcupdown>=#{jbcupdown}
+	</update>
+	
+	<update id="replyUpdateLeftrightJobBoardComment" parameterType="HashMap">
+		update job_board_comment set jbcleftright=jbcleftright+1 where jbidx=#{jbidx} and jbcleftright>=#{jbcleftright}
+	</update>
+	
+	<select id="getJobBoardCommentMaxIdx"  resultType="Integer">
+	select max(jbcidx) from job_board_comment
+	</select>
+	
+	<insert id="replyInsertJobBoardComment"  parameterType="JobBoardCommentVo" >
+		insert into job_board_comment values(#{jbcidx},#{jbcupdown},#{jbcleftright},#{jbccontent},#{jbcwriter},#{jbcwritedate},#{jbidx},#{jmidx})
+	</insert>
+	
+	<update id="replyUpdateJobBoardComment" parameterType="JobBoardCommentVo">
+		update job_board_comment set jbccontent=#{jbccontent}, jbcwriter=#{jbcwriter} where jbcidx=#{jbcidx}
+	</update>
+	
+	
+	<delete id="deleteJobBoardComment" >
+		delete from job_board_comment where jbcidx=#{jbcidx}
+	</delete>
+	
+	<select id="getJobBoardCommentContent" parameterType="Integer" resultType="JobBoardCommentVo">
+		select * from job_board_comment where jbidx=#{jbidx} order by jbcidx desc
+	</select>
+
+	<!--  	
+	<select id="getJobBoardCommentContentByPage" parameterType="HashMap" resultType="JobBoardCommentVo">
+		select * from job_board_comment where jbidx=#{jbidx} order by jbidx desc, jbcupdown asc, jbcleftright asc
+	</select>
+	-->
+
+	<select id="getJobBoardCommentContentByPage" parameterType="HashMap" resultType="JobBoardCommentVo">
+	<![CDATA[select 
+		M.rnum,M.jbcidx,M.jbcupdown,M.jbcleftright,M.jbccontent,M.jbcwriter,
+		M.jbcwritedate,M.jbidx,M.jmidx from 
+		(select rownum as rnum,S.jbcidx,S.jbcupdown,S.jbcleftright,S.jbccontent,
+				S.jbcwriter,S.jbcwritedate,S.jbidx,S.jmidx from 
+			(select jbcidx,jbcupdown,jbcleftright,jbccontent,jbcwriter,jbcwritedate,
+					jbidx,jmidx from job_board_comment 
+			where jbidx=#{jbidx}
+	]]>
+		                                                                    
+	<![CDATA[                         
+	                    
+			order by jbidx desc, jbcupdown asc, jbcleftright asc) S
+	      		where rownum <=#{pageEnd}) M
+		 where M.rnum >= #{pageStart}
+	]]>
+	</select>	
+	
+	
+	<select id="count" resultType="Integer">
+		select count(*) from job_board_comment where jbidx=#{jbidx}
+	</select>
+
+</mapper>

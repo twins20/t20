@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.twins.t20.Dao.JobMemberDaoFatherMapper">
+
+	<insert id="insertJobMember" parameterType="JobMemberVo">
+		insert into job_member values(#{jmidx},#{jmid},#{jmpsword},#{jmname},#{jmaddr},#{jmemail},'2018/01/02','y','n')
+	</insert>
+	
+	<select id="confirmJobMemberID" parameterType="String" resultType="Integer">
+		select count(*) from job_member where jmid=#{jmid}
+	</select>
+	
+	<select id="loginJobMember" parameterType="HashMap" resultType="JobMemberVo">
+		select jmidx,jmid,jmname from job_member where jmid= #{jmid} and jmpsword= #{jmpsword} and jmregister='y'
+	</select>
+	
+	<select id="getIDJobMember" parameterType="HashMap" resultType="String">
+		select jmid from job_member where   jmname=#{jmname} and jmemail=#{jmemail} and jmregister='y'
+	</select>
+	
+	<select id="getPswordJobMember" parameterType="HashMap" resultType="String">
+		select jmpsword from JOB_MEMBER 
+  			where jmid=#{jmid} and jmemail=#{jmemail} and jmregister='y'
+	</select>
+	
+	<update id="deleteJobMember" parameterType="HashMap">
+		update job_member set jmregister='n' where jmidx=#{jmidx} and jmid != 'admin'
+	</update>
+	
+	<update id="changePsword" parameterType="HashMap">
+		update job_member  set jmpsword=#{jmpsword} where jmidx=#{jmidx}
+	</update>
+	
+	<update id="modifyJobMember" parameterType="HashMap">
+		update job_member set jmemail=#{jmemail}, jmaddr=#{jmaddr} where jmidx=#{jmidx}
+	</update>
+	
+	<select id="getJobMemberMaxIdx"  resultType="Integer">
+		select max(jmidx) as nextjmidx from job_member
+	</select>
+	
+	<select id="selectJobMember" parameterType="Integer" resultType="JobMemberVo">
+		select * from job_member where jmidx=#{jmidx} and jmregister='y'
+	</select>
+</mapper>
